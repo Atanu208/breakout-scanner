@@ -1,0 +1,333 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>BREAKOUT — Nifty 500 Scanner</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@300;400;500;600;700;800;900&family=Barlow:wght@300;400;500;600&family=Martian+Mono:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+
+<!-- PAGE LOAD SCREEN -->
+<div class="page-load" id="pageLoad">
+  <div class="load-logo">BREAKOUT</div>
+  <div class="load-bar"><div class="load-fill"></div></div>
+</div>
+
+<!-- CUSTOM CURSOR -->
+<div class="cursor" id="cursor"></div>
+<div class="cursor-ring" id="cursorRing"></div>
+
+<!-- ═══ HEADER ═══ -->
+<header class="header">
+  <div class="header-left">
+    <div class="logo-mark">
+      <div class="logo-hex">
+        <svg viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <polygon points="16,2 28,9 28,23 16,30 4,23 4,9" stroke="#c8f53c" stroke-width="1.5" fill="rgba(200,245,60,0.06)"/>
+          <polyline points="9,16 13,20 22,12" stroke="#c8f53c" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </div>
+      <div class="logo-text">BREAK<span>OUT</span></div>
+    </div>
+    <div class="header-divider"></div>
+    <div class="header-sub">Nifty 500 · 52-Week Scanner</div>
+  </div>
+
+  <div class="header-center">
+    <div class="nifty-ticker">
+      NIFTY 50 <span class="val" id="niftyVal">—</span> <span class="chg" id="niftyChg"></span>
+    </div>
+    <div class="market-status">
+      <div class="status-dot" id="mktDot"></div>
+      <span id="mktStatus" style="font-size:0.62rem;letter-spacing:0.12em;color:var(--text-2)">—</span>
+    </div>
+  </div>
+
+  <div class="header-right">
+    <div class="live-clock">
+      <span class="time" id="clockTime">--:--:--</span> IST
+    </div>
+  </div>
+</header>
+
+<!-- ═══ HERO ═══ -->
+<section class="hero">
+  <div class="hero-inner">
+    <div>
+      <div class="hero-eyebrow">AI-Powered Breakout Detection</div>
+      <h1 class="hero-title">
+        52-Week
+        <span class="accent">Breakout</span>
+        <span class="thin">Scanner / Nifty 500</span>
+      </h1>
+      <p class="hero-desc">
+        Identifies stocks making new 52-week highs with volume confirmation and AI momentum scoring.
+        Live signal classification across all Nifty 500 constituents via real-time market data.
+      </p>
+    </div>
+
+    <div class="hero-action">
+      <button class="scan-btn" id="scanBtn" onclick="runScan()">
+        <div class="scan-btn-ring"></div>
+        <div class="scan-btn-ring-2"></div>
+        <div class="scan-btn-core">
+          <div class="scan-btn-icon" id="scanIcon">◈</div>
+          <div class="scan-btn-label" id="scanLabel">SCAN</div>
+        </div>
+      </button>
+      <div class="scan-btn-note" id="scanNote">Click to run live scan</div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ STATS RIBBON ═══ -->
+<div class="stats-ribbon">
+  <div class="stat-item">
+    <div class="stat-label">Universe</div>
+    <div class="stat-number" id="s1">500</div>
+    <div class="stat-sub">Nifty 500 Stocks</div>
+  </div>
+  <div class="stat-item">
+    <div class="stat-label">Breakouts Found</div>
+    <div class="stat-number" id="s2">—</div>
+    <div class="stat-sub up" id="s2sub">Run scan first</div>
+  </div>
+  <div class="stat-item">
+    <div class="stat-label">Strong Signals</div>
+    <div class="stat-number" id="s3">—</div>
+    <div class="stat-sub" id="s3sub">High conviction</div>
+  </div>
+  <div class="stat-item">
+    <div class="stat-label">Sectors Active</div>
+    <div class="stat-number" id="s4">—</div>
+    <div class="stat-sub">Breadth measure</div>
+  </div>
+  <div class="stat-item">
+    <div class="stat-label">Scanned At</div>
+    <div class="stat-number" style="font-size:1.1rem;margin-top:0.3rem" id="s5">—:—</div>
+    <div class="stat-sub" id="s5sub">Awaiting scan</div>
+  </div>
+</div>
+
+<!-- ═══ MAIN LAYOUT ═══ -->
+<div class="main">
+  <!-- LEFT: TABLE -->
+  <div>
+    <!-- CONTROLS -->
+    <div class="controls">
+      <div class="control-group">
+        <button class="tab-btn active" onclick="setTab('all',this)">All</button>
+        <button class="tab-btn" onclick="setTab('strong',this)">Strong</button>
+        <button class="tab-btn" onclick="setTab('sector',this)">By Sector</button>
+      </div>
+
+      <select class="filter-select" id="sectorSel" onchange="applyFilters()">
+        <option value="">All Sectors</option>
+        <option value="Banking">Banking</option>
+        <option value="IT">IT</option>
+        <option value="Pharma">Pharma</option>
+        <option value="Auto">Auto</option>
+        <option value="FMCG">FMCG</option>
+        <option value="Energy">Energy</option>
+        <option value="Capital Goods">Capital Goods</option>
+        <option value="Metals">Metals</option>
+        <option value="Realty">Realty</option>
+        <option value="Finance">Finance</option>
+        <option value="Infrastructure">Infrastructure</option>
+        <option value="Chemicals">Chemicals</option>
+        <option value="Consumer Durables">Consumer Durables</option>
+        <option value="Healthcare">Healthcare</option>
+        <option value="Telecom">Telecom</option>
+        <option value="Hotels">Hotels</option>
+        <option value="New Age Tech">New Age Tech</option>
+        <option value="Textile">Textile</option>
+        <option value="Media">Media</option>
+        <option value="Cement">Cement</option>
+        <option value="Insurance">Insurance</option>
+        <option value="Agri">Agri &amp; Chemicals</option>
+        <option value="Specialty">Specialty</option>
+        <option value="Sugar">Sugar</option>
+        <option value="Paper">Paper &amp; Packaging</option>
+        <option value="Retail">Retail</option>
+      </select>
+
+      <select class="filter-select" id="sigSel" onchange="applyFilters()">
+        <option value="">All Signals</option>
+        <option value="strong">Strong</option>
+        <option value="moderate">Moderate</option>
+        <option value="weak">Weak</option>
+      </select>
+
+      <div class="search-wrap">
+        <input type="text" class="search-input" id="srch" placeholder="Search symbol..." oninput="applyFilters()">
+      </div>
+    </div>
+
+    <!-- TABLE PANEL -->
+    <div class="table-panel">
+      <div class="table-panel-header">
+        <div class="panel-title">Nifty 500 Candidates</div>
+        <div class="result-badge" id="resBadge">— stocks</div>
+      </div>
+
+      <!-- EMPTY STATE -->
+      <div class="empty-state" id="emptyState">
+        <div class="empty-grid-art">
+          <div class="empty-cell"></div><div class="empty-cell"></div><div class="empty-cell"></div><div class="empty-cell"></div><div class="empty-cell"></div>
+          <div class="empty-cell"></div><div class="empty-cell"></div><div class="empty-cell"></div><div class="empty-cell"></div><div class="empty-cell"></div>
+          <div class="empty-cell"></div><div class="empty-cell"></div><div class="empty-cell"></div><div class="empty-cell"></div><div class="empty-cell"></div>
+        </div>
+        <div class="empty-title">Awaiting Scan</div>
+        <div class="empty-sub">Click the circular scan button to begin</div>
+      </div>
+
+      <!-- SCAN LOADING -->
+      <div class="scan-overlay" id="scanOverlay">
+        <div class="scan-anim">
+          <div class="scan-circle sc1"></div>
+          <div class="scan-circle sc2"></div>
+          <div class="scan-circle sc3"></div>
+          <div class="scan-circle sc4"></div>
+          <div class="scan-sweep"></div>
+          <div class="scan-dot"></div>
+        </div>
+        <div class="scan-title">Scanning Market</div>
+        <div class="scan-progress-wrap">
+          <div class="scan-track"><div class="scan-fill" id="scanFill"></div></div>
+          <div class="scan-pct" id="scanPct">0%</div>
+        </div>
+        <div class="scan-log" id="scanLog"><em>&gt;</em> Initializing...</div>
+      </div>
+
+      <!-- TABLE -->
+      <div class="table-scroll" id="tableWrap" style="display:none">
+        <table>
+          <colgroup>
+            <col style="width:40px">
+            <col style="width:175px">
+            <col style="width:90px">
+            <col style="width:95px">
+            <col style="width:78px">
+            <col style="width:78px">
+            <col style="width:68px">
+            <col style="width:115px">
+            <col style="width:95px">
+          </colgroup>
+          <thead>
+            <tr>
+              <th>#</th>
+              <th class="sortable" onclick="sort('symbol')">Symbol</th>
+              <th class="sortable" onclick="sort('price')">CMP</th>
+              <th class="sortable" onclick="sort('high52')">52W High</th>
+              <th class="sortable" onclick="sort('pct')">% High</th>
+              <th>Volume</th>
+              <th>Trend</th>
+              <th>Sector</th>
+              <th>Signal</th>
+            </tr>
+          </thead>
+          <tbody id="tbody"></tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <!-- SIDEBAR -->
+  <div class="sidebar">
+
+    <!-- AI INSIGHT CARD -->
+    <div class="side-card">
+      <div class="side-card-header">
+        <span>AI Market Insight</span>
+        <span style="color:var(--lime-dim)">CLAUDE</span>
+      </div>
+      <div class="insight-body">
+        <div class="insight-loading" id="insightLoading" style="display:none">
+          <span>Analyzing</span>
+          <div class="insight-dots">
+            <span></span><span></span><span></span>
+          </div>
+        </div>
+        <div class="insight-text" id="insightText">
+          Run the scanner to generate an AI-powered market insight based on live breakout activity and sector momentum.
+        </div>
+      </div>
+    </div>
+
+    <!-- SELECTED STOCK DETAIL -->
+    <div class="side-card">
+      <div class="side-card-header">
+        <span>Stock Detail</span>
+        <span id="detailSym" style="color:var(--cyan)">—</span>
+      </div>
+      <div class="insight-body">
+        <div id="detailEmpty" style="color:var(--text-3);font-family:var(--font-mono);font-size:0.62rem;letter-spacing:0.1em;padding:1rem 0">
+          Click any row to inspect
+        </div>
+        <div class="detail-card" id="detailCard">
+          <div class="detail-sym" id="dSym">—</div>
+          <div class="detail-name" id="dName">—</div>
+          <div class="detail-price-row">
+            <div class="detail-price" id="dPrice">—</div>
+            <div class="detail-pct" id="dPct">—</div>
+          </div>
+          <div style="margin-top:1rem;">
+            <div class="detail-row">
+              <div class="detail-key">52W HIGH</div>
+              <div class="detail-val" id="dHigh">—</div>
+            </div>
+            <div class="detail-row">
+              <div class="detail-key">VOL RATIO</div>
+              <div class="detail-val" id="dVol">—</div>
+            </div>
+            <div class="detail-row">
+              <div class="detail-key">SECTOR</div>
+              <div class="detail-val" id="dSect">—</div>
+            </div>
+            <div class="detail-row">
+              <div class="detail-key">SIGNAL</div>
+              <div class="detail-val" id="dSig">—</div>
+            </div>
+          </div>
+          <div class="detail-note" id="dNote">—</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- SECTOR DISTRIBUTION -->
+    <div class="side-card" id="sectorCard" style="display:none">
+      <div class="side-card-header">
+        <span>Sector Breadth</span>
+        <span id="secTotal" style="color:var(--lime-dim)">—</span>
+      </div>
+      <div class="sector-dist" id="sectorDist"></div>
+    </div>
+
+    <!-- DISCLAIMER -->
+    <div style="padding:1rem;font-family:var(--font-mono);font-size:0.56rem;letter-spacing:0.08em;color:var(--text-3);line-height:1.6;border:1px solid var(--rim);background:var(--panel);flex-shrink:0">
+      ⚠ For educational purposes only. Not investment advice. Always conduct independent research before any investment decision.
+    </div>
+  </div>
+</div>
+
+<!-- FOOTER -->
+<footer>
+  <span>BREAKOUT.SCAN © 2025 · Nifty 500 · AI-Powered Intelligence</span>
+  <span>Live market data · <span>Not Financial Advice</span></span>
+</footer>
+
+<!-- Scripts in dependency order (no data.js — data comes from /api/scan) -->
+<script src="js/state.js"></script>
+<script src="js/utils.js"></script>
+<script src="js/cursor.js"></script>
+<script src="js/clock.js"></script>
+<script src="js/insight.js"></script>
+<script src="js/table.js"></script>
+<script src="js/scanner.js"></script>
+<script src="js/app.js"></script>
+
+</body>
+</html>
