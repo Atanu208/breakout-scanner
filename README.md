@@ -15,7 +15,6 @@ This project scans Nifty 500 stocks and identifies 52-week high breakout opportu
 - Built using AI-assisted vibe coding workflow
 - Beginner-friendly and easy to navigate
 
----
 
 ## 📦 Installation
 
@@ -29,11 +28,7 @@ npm start
 
 Open in browser:
 
-```bash
 http://localhost:2000
-```
-
----
 
 ## 📌 Usage
 
@@ -42,16 +37,12 @@ http://localhost:2000
 3. View stocks hitting 52-week highs
 4. Analyze breakout opportunities quickly
 
----
-
 ## 🛠 Tech Stack
 
 * Antigravity
 * JavaScript
 * Node.js
 * AI-assisted Development
-
----
 
 ## 💡 Purpose
 
