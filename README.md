@@ -5,7 +5,6 @@ AI-powered Stock Breakout Scanner built using Antigravity with a vibe coding app
 
 This project scans **Nifty 500 stocks** and identifies **52-week high breakout opportunities** through a clean, modern, and easy-to-use interface.
 
----
 
 ## 🚀 Features
 
@@ -37,7 +36,7 @@ npm start
 Open in browser:
 
 ```bash
-http://localhost:3000
+http://localhost:2000
 ```
 
 ---
@@ -64,13 +63,3 @@ http://localhost:3000
 
 This project helps traders and investors quickly identify momentum stocks making fresh yearly highs using automation and a modern dashboard experience.
 
----
-
-## 📈 Example Use Case
-
-Find strong breakout stocks from Nifty 500 in seconds instead of manually checking charts one by one.
-
----
-
-```
-```
