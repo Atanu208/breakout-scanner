@@ -21,17 +21,11 @@ This project scans Nifty 500 stocks and identifies 52-week high breakout opportu
 
 ### 1. Install dependencies
 
-```bash
 npm install
-````
-
----
 
 ## ▶️ Run Project
 
-```bash
 npm start
-```
 
 Open in browser:
 
